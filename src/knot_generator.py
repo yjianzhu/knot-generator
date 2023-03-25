@@ -180,16 +180,19 @@ def write_lammps(data,filename,type="open",Lx=200,Ly=200,Lz=200):
             for i in range(N-1):
                 f.write('{}\t{}\t{}\t{}\n'.format(i+1,1,i+1,i+2))
         elif(type=="close"):
-            for i in range(N):
-                f.write('{}\t{}\t{}\t{}\n'.format(i+1,1,i+1,(i+2)%N+1))
+            for i in range(N-1):
+                f.write('{}\t{}\t{}\t{}\n'.format(i+1,1,i+1,i+2))
+            f.write('{}\t{}\t{}\t{}\n'.format(N,1,N,1))
         # 写入angle信息
         f.write('\nAngles\n\n')
         if (type=="open"):
             for i in range(N-2):
                 f.write('{}\t{}\t{}\t{}\t{}\n'.format(i+1,1,i+1,i+2,i+3))
         elif(type=="close"):
-            for i in range(N):
-                f.write('{}\t{}\t{}\t{}\t{}\n'.format(i+1,1,i+1,(i+2)%N+1,(i+3)%N+1))
+            for i in range(N-2):
+                f.write('{}\t{}\t{}\t{}\t{}\n'.format(i+1,1,i+1,i+2,i+3))
+            f.write('{}\t{}\t{}\t{}\t{}\n'.format(N-1,1,N-1,N,1))
+            f.write('{}\t{}\t{}\t{}\t{}\n'.format(N,1,N,1,2))
 
 # 定义读取xyz文件的函数
 def read_xyz(filename):
