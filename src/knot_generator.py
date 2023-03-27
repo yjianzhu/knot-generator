@@ -25,6 +25,29 @@ def open_file(file):
     #print(data.values.shape)
     return data.values
 
+# 定义生成环形或者开链 unknot 的函数
+def unknot_generator(length,type):
+    # 生成圆形长度为length的坐标
+    if type == "close":
+        data = np.zeros((length, 3))
+        radius = length/2/np.pi
+        for i in range(length):
+            data[i, 0] = np.cos(2 * np.pi * i / length)*radius
+            data[i, 1] = np.sin(2 * np.pi * i / length)*radius
+            data[i, 2] = 0
+        return data
+    # 生成开链长度为length的坐标
+    elif type == "open":
+        data = np.zeros((length, 3))
+        # 用折线生成开链
+        for i in range(length):
+            data[i, 0] = 0
+            data[i, 1] = 0
+            data[i, 2] = i
+        return data
+
+
+
 # 定义生成更长纽结的函数,输入data为numpy数组，拓展长度至length
 def knot_generator(data, length,type="open",mod="MC"):
     """生成开链or闭链纽结"""
@@ -209,14 +232,18 @@ def read_xyz(filename):
 
 
 if __name__ == '__main__':
-    knot_cores=get_file_list("core")
-    types="close"
-    Lknot=300
+    data = unknot_generator(300,type="close")
+    dis = distance(data,type="close")
+    print(max(dis),min(dis),np.mean(dis))
+    write_lammps(data,"unknot_L300_close.data",type="close")
+    # knot_cores=get_file_list("core")
+    # types="close"
+    # Lknot=300
 
-    for knot in knot_cores:
-        data=open_file(knot)
-        data=knot_generator(data,Lknot,types)
-        # 从文件名中提取纽结类型
-        knot_type=knot.split("_")[1]
-        knot_type=knot_type.split(".")[0]
-        write_lammps(data,"lammps/{}_L{}_{}.data".format(knot_type,data.shape[0],types),type=types)
+    # for knot in knot_cores:
+    #     data=open_file(knot)
+    #     data=knot_generator(data,Lknot,types)
+    #     # 从文件名中提取纽结类型
+    #     knot_type=knot.split("_")[1]
+    #     knot_type=knot_type.split(".")[0]
+    #     write_lammps(data,"lammps/{}_L{}_{}.data".format(knot_type,data.shape[0],types),type=types)
